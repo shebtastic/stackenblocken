@@ -22,8 +22,8 @@ public class PictureTest {
 
     @Before
     public void setUp() {
-        underTest = new VerticalPicture(TAGS_1);
-        pictureToTestWith = new VerticalPicture(TAGS_2);
+        underTest = new VerticalPicture(0, TAGS_1);
+        pictureToTestWith = new VerticalPicture(1, TAGS_2);
     }
 
     @Test

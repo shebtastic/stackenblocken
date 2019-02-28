@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Picture {
+    public final int INDEX;
     public final String ORIENTATION;
     public final List<String> TAGS;
 
-    public Picture(String orientation, List<String> tags) {
+    public Picture(int index, String orientation, List<String> tags) {
+        this.INDEX = index;
         this.ORIENTATION = orientation;
         this.TAGS = tags;
     }
