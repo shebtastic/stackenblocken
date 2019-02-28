@@ -34,4 +34,9 @@ public abstract class Picture {
             - (combineTags(picture).size())
         );
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(INDEX);
+    }
 }

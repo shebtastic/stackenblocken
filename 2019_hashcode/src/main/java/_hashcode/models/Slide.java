@@ -2,6 +2,7 @@ package _hashcode.models;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Slide {
     public final List<Picture> PICTURES;
@@ -22,5 +23,12 @@ public class Slide {
 
     public int tagOverlap(Slide slide) {
         return Math.abs(tags().size() - slide.tags().size());
+    }
+
+    @Override
+    public String toString() {
+        return PICTURES.stream()
+                .map(Picture::toString)
+                .collect(Collectors.joining(" "));
     }
 }
