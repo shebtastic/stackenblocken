@@ -3,7 +3,10 @@
  */
 package _hashcode;
 
+import _hashcode.models.HorizontalPicture;
 import _hashcode.models.Picture;
+import _hashcode.models.Slide;
+import _hashcode.models.VerticalPicture;
 
 import java.util.ArrayList;
 
@@ -15,7 +18,34 @@ public class App {
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         ArrayList<Picture> pictures = Reader.read("inputs/a_example.txt");
-        System.out.println("pictures: " + pictures.size());
+        ArrayList<Slide> slides = makeSlides(pictures);
+        System.out.println("slides size: " + slides.size());
+        System.out.println("slides: " + slides);
+    }
+
+    private static ArrayList<Slide> makeSlides(ArrayList<Picture> pictures) {
+        ArrayList<HorizontalPicture> horizontalPictures = new ArrayList<>();
+        ArrayList<VerticalPicture> verticalPictures = new ArrayList<>();
+        pictures.forEach(picture -> {
+            if (picture.ORIENTATION.equals(HorizontalPicture.ORIENTATION)) {
+                horizontalPictures.add((HorizontalPicture)picture);
+            } else {
+                verticalPictures.add((VerticalPicture)picture);
+            }
+        });
+
+        ArrayList<Slide> slides = new ArrayList<>();
+        horizontalPictures.forEach(picture -> slides.add(new Slide(picture)));
+        slides.addAll(findVerticalSlides(verticalPictures));
+        return slides;
+    }
+
+    private static ArrayList<Slide> findVerticalSlides(ArrayList<VerticalPicture> verticalPictures) {
+        ArrayList<Slide> slides = new ArrayList<>();
+        for (int i=0; i<verticalPictures.size(); i+=2) {
+            slides.add(new Slide(verticalPictures.get(i), verticalPictures.get(i+1)));
+        }
+        return slides;
     }
 
 }
