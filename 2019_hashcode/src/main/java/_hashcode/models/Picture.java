@@ -38,8 +38,6 @@ public abstract class Picture {
 
     @Override
     public String toString() {
-        return TAGS
-            .stream()
-            .collect(Collectors.joining(" "));
+        return String.join(" ", TAGS);
     }
 }
