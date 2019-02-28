@@ -22,9 +22,9 @@ public class Reader {
                 String orientation = inputArray[0];
                 String[] tags = inputArray[2].split(" ");
                 if (orientation.equals("H")) {
-                    pictures.add(new HorizontalPicture(Arrays.asList(tags)));
+                    pictures.add(new HorizontalPicture(i, Arrays.asList(tags)));
                 } else {
-                    pictures.add(new VerticalPicture(Arrays.asList(tags)));
+                    pictures.add(new VerticalPicture(i, Arrays.asList(tags)));
                 }
             }
         } catch (FileNotFoundException e) {
