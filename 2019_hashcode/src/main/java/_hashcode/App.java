@@ -3,9 +3,9 @@
  */
 package _hashcode;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import _hashcode.models.Picture;
+
+import java.util.ArrayList;
 
 public class App {
     public String getGreeting() {
@@ -14,16 +14,8 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-//        fileReader(args[0]);
+        ArrayList<Picture> pictures = Reader.read("inputs/a_example.txt");
+        System.out.println("pictures: " + pictures.size());
     }
 
-    private void fileReader(String file) {
-//        File file = new File();
-//        BufferedReader br = new BufferedReader(new FileReader(file));
-//        String limits[] = br.readLine().split(" ");
-//        _rows = Integer.valueOf(limits[0]);
-//        _columns = Integer.valueOf(limits[1]);
-//        _minIngredient = Integer.valueOf(limits[2]);
-//        _maxCells = Integer.valueOf(limits[3]);
-    }
 }
