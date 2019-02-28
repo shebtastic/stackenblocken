@@ -11,12 +11,7 @@ import _hashcode.models.VerticalPicture;
 import java.util.ArrayList;
 
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
         ArrayList<Picture> pictures = Reader.read("inputs/a_example.txt");
         ArrayList<Slide> slides = makeSlides(pictures);
         System.out.println("slides size: " + slides.size());
