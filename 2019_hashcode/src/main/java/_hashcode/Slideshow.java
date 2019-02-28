@@ -3,6 +3,8 @@ package _hashcode;
 import _hashcode.models.Slide;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Slideshow {
@@ -33,4 +35,23 @@ public class Slideshow {
 
         return score;
     }
+
+    private void sort() {
+        Collections.sort(slides, new Comparator<Slide>() {
+            public int compare(Slide s1, Slide s2) {
+                return Integer.compare(s1.tags().size(), s2.tags().size());
+            }
+        });
+    }
+
+    public void bringInOrder() {
+        this.sort();
+        List<Slide> newSlides = new ArrayList<>();
+        for (int i=0; i<this.slides.size() / 2; i+=2) {
+            newSlides.add(slides.get(i));
+            newSlides.add(slides.get(slides.size() - (i + 1)));
+        }
+        this.slides = newSlides;
+    }
+
 }

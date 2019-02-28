@@ -21,8 +21,10 @@ public class App {
         slides.forEach(slideshow::addSlide);
         System.out.println("slides size: " + slides.size());
         System.out.println("slideshow interestScore: " + slideshow.interestScore());
-        Writer.write(slides, "output.txt");
-//        generateOutputs();
+        slideshow.bringInOrder();
+        System.out.println("slideshow.sort interestScore: " + slideshow.interestScore());
+
+        generateOutputs();
     }
 
     private static void generateOutputs() {
