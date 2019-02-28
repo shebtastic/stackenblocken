@@ -14,8 +14,11 @@ public class App {
     public static void main(String[] args) {
         ArrayList<Picture> pictures = Reader.read("inputs/a_example.txt");
         ArrayList<Slide> slides = makeSlides(pictures);
+        Slideshow slideshow =  new Slideshow();
+        slides.forEach(slideshow::addSlide);
         System.out.println("slides size: " + slides.size());
         System.out.println("slides: " + slides);
+        System.out.println("slideshow interestScore:" + slideshow.interestScore());
     }
 
     private static ArrayList<Slide> makeSlides(ArrayList<Picture> pictures) {
