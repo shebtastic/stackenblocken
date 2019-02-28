@@ -5,10 +5,10 @@ import _hashcode.models.Slide;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Writer {
-    public static void write(ArrayList<Slide> slides, String name) {
+    public static void write(List<Slide> slides, String name) {
         BufferedWriter writer;
 
         try {

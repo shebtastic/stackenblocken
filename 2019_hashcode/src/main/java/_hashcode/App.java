@@ -10,12 +10,12 @@ import _hashcode.models.VerticalPicture;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        ArrayList<Picture> pictures = Reader.read("inputs/c_memorable_moments.txt");
-        ArrayList<Slide> slides = makeSlides(pictures);
+        List<Picture> pictures = Reader.read("inputs/a_example.txt");
+        List<Slide> slides = makeSlides(pictures);
         Slideshow slideshow =  new Slideshow();
         slides.forEach(slideshow::addSlide);
         System.out.println("slides size: " + slides.size());
@@ -23,9 +23,9 @@ public class App {
         Writer.write(slides, "output.txt");
     }
 
-    private static ArrayList<Slide> makeSlides(ArrayList<Picture> pictures) {
-        ArrayList<HorizontalPicture> horizontalPictures = new ArrayList<>();
-        ArrayList<VerticalPicture> verticalPictures = new ArrayList<>();
+    private static ArrayList<Slide> makeSlides(List<Picture> pictures) {
+        List<HorizontalPicture> horizontalPictures = new ArrayList<>();
+        List<VerticalPicture> verticalPictures = new ArrayList<>();
         pictures.forEach(picture -> {
             if (picture.ORIENTATION.equals(HorizontalPicture.ORIENTATION)) {
                 horizontalPictures.add((HorizontalPicture)picture);
@@ -40,8 +40,8 @@ public class App {
         return slides;
     }
 
-    private static ArrayList<Slide> findVerticalSlides(ArrayList<VerticalPicture> verticalPictures) {
-        ArrayList<Slide> slides = new ArrayList<>();
+    private static List<Slide> findVerticalSlides(List<VerticalPicture> verticalPictures) {
+        List<Slide> slides = new ArrayList<>();
         verticalPictures.sort(Comparator.comparingInt(verticalPicture -> verticalPicture.TAGS.size()));
         for (int i=0; i<verticalPictures.size() / 2; i+=2) {
             slides.add(new Slide(
@@ -56,4 +56,9 @@ public class App {
         return slides;
     }
 
+    private void findLeastLossyPermutation(List<VerticalPicture> verticalPictures) {
+        for (int i = 0; i < verticalPictures.size() / 2; i++) {
+
+        }
+    }
 }
