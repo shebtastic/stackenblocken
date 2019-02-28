@@ -1,19 +1,35 @@
 package _hashcode.models;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public abstract class Picture {
     public final String ORIENTATION;
-    public final String[] TAGS;
+    public final List<String> TAGS;
 
-    public Picture(String orientation, String[] tags) {
+    public Picture(String orientation, List<String> tags) {
         this.ORIENTATION = orientation;
         this.TAGS = tags;
     }
 
-    public String[] combineTags(String[] tags) {
-        return null;
+    public List<String> combineTags(Picture picture) {
+        List<String> combinedSortedTags;
+        Set<String> set = new HashSet<>();
+
+        set.addAll(this.TAGS);
+        set.addAll(picture.TAGS);
+
+        combinedSortedTags = new ArrayList<>(set);
+        combinedSortedTags.sort(String::compareTo);
+        return combinedSortedTags;
     }
 
     public int tagOverlap(Picture picture) {
-        return Math.abs(this.TAGS.length - picture.TAGS.length);
+        return Math.abs(
+            (this.TAGS.size() + picture.TAGS.size())
+            - (combineTags(picture).size())
+        );
     }
 }
