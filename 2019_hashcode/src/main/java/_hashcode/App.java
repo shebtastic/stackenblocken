@@ -19,6 +19,7 @@ public class App {
         System.out.println("slides size: " + slides.size());
         System.out.println("slides: " + slides);
         System.out.println("slideshow interestScore:" + slideshow.interestScore());
+        Writer.write(slides, "output.txt");
     }
 
     private static ArrayList<Slide> makeSlides(ArrayList<Picture> pictures) {
