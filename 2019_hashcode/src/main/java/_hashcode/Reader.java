@@ -5,10 +5,7 @@ import _hashcode.models.Picture;
 import _hashcode.models.VerticalPicture;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Reader {
     public static ArrayList<Picture> read(String path) {
@@ -25,7 +22,7 @@ public class Reader {
                 String[] inputArray = inputString.split(" ", 3);
                 String orientation = inputArray[0];
                 String[] tags = inputArray[2].split(" ");
-                List<Integer> intTags = new ArrayList<>();
+                Set<Integer> intTags = new HashSet<>();
                 for (String tag : tags) {
                     if (tagDic.containsKey(tag)) {
                         intTags.add(tagDic.get(tag));

@@ -2,15 +2,16 @@ package _hashcode.models;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Slide {
     public final List<Picture> PICTURES;
-    public final List<Integer> TAGS;
+    public final Set<Integer> TAGS;
 
     public Slide(VerticalPicture verticalPicture, VerticalPicture secondVerticalPicture) {
         this.PICTURES = Arrays.asList(verticalPicture, secondVerticalPicture);
-        this.TAGS = PICTURES.get(0).combineTags(PICTURES.get(1));
+        this.TAGS = PICTURES.get(0).combinedTags(PICTURES.get(1));
     }
 
     public Slide(HorizontalPicture horizontalPicture) {

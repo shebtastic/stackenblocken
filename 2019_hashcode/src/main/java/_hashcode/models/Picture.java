@@ -1,32 +1,25 @@
 package _hashcode.models;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class Picture {
     public final int INDEX;
     public final String ORIENTATION;
-    public final List<Integer> TAGS;
+    public final Set<Integer> TAGS;
 
-    public Picture(int index, String orientation, List<Integer> tags) {
+    public Picture(int index, String orientation, Set<Integer> tags) {
         this.INDEX = index;
         this.ORIENTATION = orientation;
         this.TAGS = tags;
     }
 
-    public List<Integer> combineTags(Picture picture) {
-        List<Integer> combinedSortedTags;
+    public Set<Integer> combinedTags(Picture picture) {
         Set<Integer> set = new HashSet<>();
-
         set.addAll(this.TAGS);
         set.addAll(picture.TAGS);
-
-        combinedSortedTags = new ArrayList<>(set);
-        combinedSortedTags.sort(Integer::compareTo);
-        return combinedSortedTags;
+        return set;
     }
 
     @Override
@@ -37,7 +30,7 @@ public abstract class Picture {
     public int tagOverlap(Picture picture) {
         return Math.abs(
             (this.TAGS.size() + picture.TAGS.size())
-            - (combineTags(picture).size())
+            - (combinedTags(picture).size())
         );
     }
 

@@ -32,7 +32,7 @@ public class PictureTest {
         List<String> expectedLabels = COMBINED_TAGS_1_2;
 
         //when
-        List<String> actualLabels = underTest.combineTags(pictureToTestWith);
+        List<String> actualLabels = underTest.combinedTags(pictureToTestWith);
 
         //then
         assertEquals(expectedLabels, actualLabels);
