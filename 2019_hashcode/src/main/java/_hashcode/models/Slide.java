@@ -22,7 +22,7 @@ public class Slide {
     }
 
     public int tagOverlap(Slide slide) {
-        return Math.abs(tags().size() - slide.tags().size());
+        return (int) this.tags().stream().filter(tag -> slide.tags().contains(tag)).count();
     }
 
     @Override
