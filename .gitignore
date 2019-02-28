@@ -189,6 +189,3 @@ modules.xml
  **/build/
 
  # End of https://www.gitignore.io/api/vim,java,macos,gradle,jetbrains+all,visualstudiocode
-
-
- 2019_hashcode/outputs/*.txt
