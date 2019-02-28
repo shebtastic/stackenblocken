@@ -21,6 +21,6 @@ public class Slide {
     }
 
     public int tagOverlap(Slide slide) {
-        return 0;
+        return Math.abs(tags().size() - slide.tags().size());
     }
 }
