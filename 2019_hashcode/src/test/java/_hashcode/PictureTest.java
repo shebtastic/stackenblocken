@@ -35,7 +35,7 @@ public class PictureTest {
         List<String> actualLabels = underTest.combineTags(pictureToTestWith);
 
         //then
-        assertEquals(actualLabels, expectedLabels);
+        assertEquals(expectedLabels, actualLabels);
     }
 
     @Test
@@ -47,6 +47,6 @@ public class PictureTest {
         int actualOverlap = underTest.tagOverlap(pictureToTestWith);
 
         //then
-        assertEquals(actualOverlap, expectedOverlap);
+        assertEquals(expectedOverlap, actualOverlap);
     }
 }
