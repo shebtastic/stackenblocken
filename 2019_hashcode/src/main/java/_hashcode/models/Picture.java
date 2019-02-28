@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class Picture {
     public final int INDEX;
@@ -26,6 +27,11 @@ public abstract class Picture {
         combinedSortedTags = new ArrayList<>(set);
         combinedSortedTags.sort(Integer::compareTo);
         return combinedSortedTags;
+    }
+
+    @Override
+    public String toString() {
+        return TAGS.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
 
     public int tagOverlap(Picture picture) {

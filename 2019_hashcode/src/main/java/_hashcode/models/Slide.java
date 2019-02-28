@@ -6,23 +6,20 @@ import java.util.stream.Collectors;
 
 public class Slide {
     public final List<Picture> PICTURES;
+    public final List<Integer> TAGS;
 
     public Slide(VerticalPicture verticalPicture, VerticalPicture secondVerticalPicture) {
         this.PICTURES = Arrays.asList(verticalPicture, secondVerticalPicture);
+        this.TAGS = PICTURES.get(0).combineTags(PICTURES.get(1));
     }
 
     public Slide(HorizontalPicture horizontalPicture) {
         this.PICTURES = Arrays.asList(horizontalPicture);
-    }
-
-    public List<Integer> tags() {
-        return PICTURES.size() == 2
-            ? PICTURES.get(0).combineTags(PICTURES.get(1))
-            : PICTURES.get(0).TAGS;
+        this.TAGS = PICTURES.get(0).TAGS;
     }
 
     public int tagOverlap(Slide slide) {
-        return (int) this.tags().stream().filter(tag -> slide.tags().contains(tag)).count();
+        return (int) this.TAGS.stream().filter(tag -> slide.TAGS.contains(tag)).count();
     }
 
     @Override

@@ -26,18 +26,14 @@ public class Slideshow {
 
             score += Math.min(
                 Math.min(
-                    currentSlide.tags().size() - currentSlide.tagOverlap(nextSlide),
+                    currentSlide.TAGS.size() - currentSlide.tagOverlap(nextSlide),
                     currentSlide.tagOverlap(nextSlide)
                 ),
-                nextSlide.tags().size() - currentSlide.tagOverlap(nextSlide)
+                nextSlide.TAGS.size() - currentSlide.tagOverlap(nextSlide)
             );
         }
 
         return score;
-    }
-
-    private void sort() {
-        Collections.sort(slides, (s1, s2) -> Integer.compare(s1.tags().size(), s2.tags().size()));
     }
 
     public void bringInOrder() {
@@ -48,7 +44,7 @@ public class Slideshow {
         while (slides.size() > 1) {
             System.out.println(slides.size());
             for (int i = 0; i < slides.size() - 1; i++) {
-                int distance = (currentSlide.tags().size() / 2) - currentSlide.tagOverlap(slides.get(i));
+                int distance = (currentSlide.TAGS.size() / 2) - currentSlide.tagOverlap(slides.get(i));
                 if (distance == tolerance) {
                     newSlides.add(slides.remove(i));
                     tolerance = 0;

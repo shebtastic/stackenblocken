@@ -14,23 +14,25 @@ import java.util.Comparator;
 import java.util.List;
 
 public class App {
+    public static final List<String> INPUTS = Arrays.asList("a_example.txt", "b_lovely_landscapes.txt", "c_memorable_moments.txt", "d_pet_pictures.txt", "e_shiny_selfies.txt");
+
+
     public static void main(String[] args) {
-        List<Picture> pictures = Reader.read("inputs/c_memorable_moments.txt");
+        List<Picture> pictures = Reader.read(INPUTS.get(1));
         List<Slide> slides = makeSlides(pictures);
         Slideshow slideshow =  new Slideshow();
         slides.forEach(slideshow::addSlide);
         System.out.println("slides size: " + slides.size());
         System.out.println("slideshow interestScore: " + slideshow.interestScore());
         slideshow.bringInOrder();
-        System.out.println("slideshow.sort interestScore: " + slideshow.interestScore());
+        System.out.println("slideshow.bringInOrder interestScore: " + slideshow.interestScore());
 
         generateOutputs();
     }
 
     private static void generateOutputs() {
-        List<String> inputs = Arrays.asList("a_example.txt", "b_lovely_landscapes.txt", "c_memorable_moments.txt", "d_pet_pictures.txt", "e_shiny_selfies.txt");
-        inputs.forEach(input -> {
-            List<Picture> pictures = Reader.read("inputs/" + input);
+        INPUTS.forEach(input -> {
+            List<Picture> pictures = Reader.read(input);
             List<Slide> slides = makeSlides(pictures);
             Slideshow slideshow =  new Slideshow();
             slides.forEach(slideshow::addSlide);
@@ -66,14 +68,9 @@ public class App {
             );
         }
 //        slides.forEach(slide -> {
-//            System.out.println(slide.tags().size() + " " + slide.PICTURES.get(0) + " " + slide.PICTURES.get(1));
+//            System.out.println(slide.TAGS.size() + " " + slide.PICTURES.get(0) + " " + slide.PICTURES.get(1));
 //        });
         return slides;
     }
 
-    private void findLeastLossyPermutation(List<VerticalPicture> verticalPictures) {
-        for (int i = 0; i < verticalPictures.size() / 2; i++) {
-
-        }
-    }
 }

@@ -18,7 +18,7 @@ public class Reader {
         HashMap<String, Integer> tagDic = new HashMap<>();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(file));
+            br = new BufferedReader(new FileReader("inputs/" + file));
             int pictureCount = Integer.parseInt(br.readLine());
             for (int i=0; i<pictureCount; i++) {
                 String inputString = br.readLine();
@@ -31,6 +31,7 @@ public class Reader {
                         intTags.add(tagDic.get(tag));
                     } else {
                         intTags.add(++tagCounter);
+                        tagDic.put(tag, tagCounter);
                     }
                 }
                 if (orientation.equals("H")) {
