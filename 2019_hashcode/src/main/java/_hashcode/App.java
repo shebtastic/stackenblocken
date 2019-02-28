@@ -9,15 +9,16 @@ import _hashcode.models.Slide;
 import _hashcode.models.VerticalPicture;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
-        ArrayList<Picture> pictures = Reader.read("inputs/a_example.txt");
+        ArrayList<Picture> pictures = Reader.read("inputs/c_memorable_moments.txt");
         ArrayList<Slide> slides = makeSlides(pictures);
         Slideshow slideshow =  new Slideshow();
         slides.forEach(slideshow::addSlide);
         System.out.println("slides size: " + slides.size());
-        System.out.println("slides: " + slides);
         System.out.println("slideshow interestScore:" + slideshow.interestScore());
         Writer.write(slides, "output.txt");
     }
@@ -41,9 +42,17 @@ public class App {
 
     private static ArrayList<Slide> findVerticalSlides(ArrayList<VerticalPicture> verticalPictures) {
         ArrayList<Slide> slides = new ArrayList<>();
-        for (int i=0; i<verticalPictures.size(); i+=2) {
-            slides.add(new Slide(verticalPictures.get(i), verticalPictures.get(i+1)));
+        verticalPictures.sort(Comparator.comparingInt(verticalPicture -> verticalPicture.TAGS.size()));
+        for (int i=0; i<verticalPictures.size() / 2; i+=2) {
+            slides.add(new Slide(
+                verticalPictures.get(i),
+                verticalPictures.get((verticalPictures.size() - (i + 1)))
+                )
+            );
         }
+//        slides.forEach(slide -> {
+//            System.out.println(slide.tags().size() + " " + slide.PICTURES.get(0) + " " + slide.PICTURES.get(1));
+//        });
         return slides;
     }
 
