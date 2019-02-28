@@ -28,7 +28,13 @@ public class Slide {
     @Override
     public String toString() {
         return PICTURES.stream()
-                .map(Picture::toString)
+                .map(Picture::toOutput)
+                .collect(Collectors.joining(" "));
+    }
+
+    public String toOutput() {
+        return PICTURES.stream()
+                .map(Picture::toOutput)
                 .collect(Collectors.joining(" "));
     }
 }

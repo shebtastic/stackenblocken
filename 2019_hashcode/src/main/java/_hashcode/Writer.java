@@ -17,7 +17,7 @@ public class Writer {
             writer.newLine();
 
             for (int i=0; i<slides.size(); i++) {
-                writer.write(slides.get(i).toString());
+                writer.write(slides.get(i).toOutput());
                 writer.newLine();
             }
 

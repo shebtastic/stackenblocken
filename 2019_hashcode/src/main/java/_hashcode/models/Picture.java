@@ -40,4 +40,8 @@ public abstract class Picture {
     public String toString() {
         return String.join(" ", TAGS);
     }
+
+    public String toOutput() {
+        return Integer.toString(INDEX);
+    }
 }
