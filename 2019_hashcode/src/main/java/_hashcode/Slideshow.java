@@ -37,20 +37,26 @@ public class Slideshow {
     }
 
     private void sort() {
-        Collections.sort(slides, new Comparator<Slide>() {
-            public int compare(Slide s1, Slide s2) {
-                return Integer.compare(s1.tags().size(), s2.tags().size());
-            }
-        });
+        Collections.sort(slides, (s1, s2) -> Integer.compare(s1.tags().size(), s2.tags().size()));
     }
 
     public void bringInOrder() {
-        this.sort();
         List<Slide> newSlides = new ArrayList<>();
-        for (int i=0; i<this.slides.size() / 2; i+=2) {
-            newSlides.add(slides.get(i));
-            newSlides.add(slides.get(slides.size() - (i + 1)));
+        newSlides.add(slides.remove(0));
+        Slide currentSlide = newSlides.get(0);
+        int tolerance = 0;
+        while (slides.size() > 1) {
+            System.out.println(slides.size());
+            for (int i = 0; i < slides.size() - 1; i++) {
+                int distance = (currentSlide.tags().size() / 2) - currentSlide.tagOverlap(slides.get(i));
+                if (distance == tolerance) {
+                    newSlides.add(slides.remove(i));
+                    tolerance = 0;
+                }
+            }
+            tolerance++;
         }
+        newSlides.add(slides.get(0));
         this.slides = newSlides;
     }
 

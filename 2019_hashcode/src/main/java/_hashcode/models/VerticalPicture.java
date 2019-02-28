@@ -6,7 +6,7 @@ public class VerticalPicture extends Picture {
 
     public static final String ORIENTATION = "VERTICAL";
 
-    public VerticalPicture(int index, List<String> tags) {
+    public VerticalPicture(int index, List<Integer> tags) {
         super(index, ORIENTATION, tags);
     }
 }

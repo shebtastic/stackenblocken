@@ -15,7 +15,7 @@ public class Slide {
         this.PICTURES = Arrays.asList(horizontalPicture);
     }
 
-    public List<String> tags() {
+    public List<Integer> tags() {
         return PICTURES.size() == 2
             ? PICTURES.get(0).combineTags(PICTURES.get(1))
             : PICTURES.get(0).TAGS;
