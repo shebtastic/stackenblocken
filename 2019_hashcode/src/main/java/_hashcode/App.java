@@ -57,13 +57,19 @@ public class App {
 
     private static List<Slide> findVerticalSlides(List<VerticalPicture> verticalPictures) {
         List<Slide> slides = new ArrayList<>();
-        verticalPictures.sort(Comparator.comparingInt(verticalPicture -> verticalPicture.TAGS.size()));
-        for (int i=0; i<verticalPictures.size() / 2; i+=2) {
-            slides.add(new Slide(
-                verticalPictures.get(i),
-                verticalPictures.get((verticalPictures.size() - (i + 1)))
-                )
-            );
+        List<List<VerticalPicture>> permutations = permute(verticalPictures.toArray(new VerticalPicture[0]));
+        permutations.sort((first, second) -> {
+            int firstSum = 0, secondSum = 0;
+            for (int i = 0; i < first.size() - 1; i++) {
+                firstSum += first.get(i).tagOverlap(first.get(i + 1));
+                secondSum += second.get(i).tagOverlap(second.get(i + 1));
+            }
+            return Integer.compare(firstSum, secondSum);
+        });
+
+        verticalPictures = permutations.get(permutations.size() -1);
+        for (int i=0; i<verticalPictures.size(); i+=2) {
+            slides.add(new Slide(verticalPictures.get(i), verticalPictures.get(i+1)));
         }
 //        slides.forEach(slide -> {
 //            System.out.println(slide.tags().size() + " " + slide.PICTURES.get(0) + " " + slide.PICTURES.get(1));
@@ -71,9 +77,27 @@ public class App {
         return slides;
     }
 
-    private void findLeastLossyPermutation(List<VerticalPicture> verticalPictures) {
-        for (int i = 0; i < verticalPictures.size() / 2; i++) {
+    public static List<List<VerticalPicture>> permute(VerticalPicture[] verticalPictures) {
+        List<List<VerticalPicture>> result = new ArrayList<>();
+        permute(0, verticalPictures, result);
+        return result;
+    }
 
+    private static void permute(int start, VerticalPicture[] verticalPictures, List<List<VerticalPicture>> result){
+        if(start == verticalPictures.length - 1){
+            result.add(new ArrayList<>(Arrays.asList(verticalPictures)));
+            return;
         }
+        for(int i = start; i < verticalPictures.length; i++){
+            swapInplace(verticalPictures, i, start);
+            permute(start + 1, verticalPictures, result);
+            swapInplace(verticalPictures, i, start);
+        }
+    }
+
+    private static void swapInplace(VerticalPicture[] verticalPictures, int i, int j){
+        VerticalPicture temp = verticalPictures[i];
+        verticalPictures[i] = verticalPictures[j];
+        verticalPictures[j] = temp;
     }
 }
