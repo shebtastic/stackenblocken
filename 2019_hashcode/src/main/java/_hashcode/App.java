@@ -40,16 +40,19 @@ public class App {
     private static void generateOutputs() {
         LOGGER.info("");
         LOGGER.info("generating Slideshows for all inputs:");
-        INPUTS.forEach(input -> {
+        int interestScore = 0;
+        for (String input : INPUTS) {
             List<Picture> pictures = Reader.read(input);
             List<Slide> slides = makeSlides(pictures);
-            Slideshow slideshow =  new Slideshow();
+            Slideshow slideshow = new Slideshow();
             slides.forEach(slideshow::addSlide);
             LOGGER.info(input + " interest Score before: " + slideshow.interestScore());
             slideshow.bringInOrder();
             Writer.write(slideshow.getSlides(), input);
             LOGGER.info(input + " interest Score after:  " + slideshow.interestScore());
-        });
+            interestScore += slideshow.interestScore();
+        }
+        LOGGER.info("interest score: " + interestScore);
     }
 
     private static ArrayList<Slide> makeSlides(List<Picture> pictures) {

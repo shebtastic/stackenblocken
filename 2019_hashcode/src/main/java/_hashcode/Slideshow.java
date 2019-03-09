@@ -11,9 +11,11 @@ import java.util.concurrent.*;
 
 public class Slideshow {
     private static final Logger LOGGER = LoggerFactory.getLogger(Slideshow.class);
+    public static final int TOLERANCE_START = 5;
+    public static final int TOLERANCE_ADDITION = 3;
 
     private List<Slide> slides = new ArrayList<>();
-    private final int THREAD_COUNT = 6;
+    private final int THREAD_COUNT = 7;
 
     public void addSlide(Slide slide) {
         slides.add(slide);
@@ -52,7 +54,7 @@ public class Slideshow {
         List<Slide> newSlides = new ArrayList<>();
         newSlides.add(slides.remove(0));
         Slide currentSlide = newSlides.get(0);
-        float tolerance = 0; // 10
+        float tolerance = TOLERANCE_START;
         while (slides.size() > 1) {
             LOGGER.debug("----");
             int slideSize = slides.size();
@@ -77,7 +79,7 @@ public class Slideshow {
             }
             if (foundIndex >= 0) {
                 LOGGER.debug("foundIndex: " + foundIndex);
-                tolerance = -1;
+                tolerance = TOLERANCE_START - TOLERANCE_ADDITION;
                 newSlides.add(slides.remove(foundIndex));
                 currentSlide = newSlides.get(newSlides.size() - 1);
                 if ((slides.size() % 10000) == 0) {
@@ -89,7 +91,7 @@ public class Slideshow {
             }
 
 
-            tolerance++;
+            tolerance += TOLERANCE_ADDITION;
         }
 
         try {
@@ -101,8 +103,8 @@ public class Slideshow {
 
         newSlides.add(slides.get(0));
         this.slides = newSlides;
-        float timePassed = System.currentTimeMillis() - beginTime;
-        LOGGER.info("ordered in " + timePassed + " ms");
+        float timePassed = (System.currentTimeMillis() - beginTime) / 1000;
+        LOGGER.info("ordered in " + timePassed + " s");
     }
 
     public List<Slide> getSlides() {
