@@ -1,6 +1,7 @@
 package _hashcode.models;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,14 +21,20 @@ public class Slide {
     }
 
     public int tagOverlap(Slide slide) {
-        return (int) this.TAGS.stream().filter(tag -> slide.TAGS.contains(tag)).count();
+        Set<Integer> set = new HashSet<>(TAGS);
+        set.removeAll(slide.TAGS);
+        return TAGS.size() - set.size();
+
     }
 
     @Override
     public String toString() {
-        return PICTURES.stream()
+        String result = PICTURES.stream()
                 .map(Picture::toOutput)
                 .collect(Collectors.joining(" "));
+        result += " TAGS: ";
+        result += TAGS.stream().map(tag -> tag.toString()).collect(Collectors.joining(" "));
+        return result;
     }
 
     public String toOutput() {

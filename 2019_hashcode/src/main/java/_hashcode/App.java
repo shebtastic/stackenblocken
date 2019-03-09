@@ -7,6 +7,8 @@ import _hashcode.models.HorizontalPicture;
 import _hashcode.models.Picture;
 import _hashcode.models.Slide;
 import _hashcode.models.VerticalPicture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,29 +16,39 @@ import java.util.Comparator;
 import java.util.List;
 
 public class App {
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
     public static final List<String> INPUTS = Arrays.asList("a_example.txt", "b_lovely_landscapes.txt", "c_memorable_moments.txt", "d_pet_pictures.txt", "e_shiny_selfies.txt");
 
 
     public static void main(String[] args) {
-        List<Picture> pictures = Reader.read(INPUTS.get(1));
+        List<Picture> pictures = Reader.read("c_memorable_moments.txt");
         List<Slide> slides = makeSlides(pictures);
         Slideshow slideshow =  new Slideshow();
         slides.forEach(slideshow::addSlide);
-        System.out.println("slides size: " + slides.size());
-        System.out.println("slideshow interestScore: " + slideshow.interestScore());
+        LOGGER.info("slides size: " + slides.size());
+        LOGGER.info("slideshow interestScore: " + slideshow.interestScore());
         slideshow.bringInOrder();
-        System.out.println("slideshow.bringInOrder interestScore: " + slideshow.interestScore());
+        LOGGER.info("ordered interestScore: " + slideshow.interestScore());
+        for(Slide slide: slideshow.getSlides()) {
+            LOGGER.debug(slide.toString());
+        }
 
-        generateOutputs();
+//        generateOutputs();
     }
 
     private static void generateOutputs() {
+        LOGGER.info("");
+        LOGGER.info("generating Slideshows for all inputs:");
         INPUTS.forEach(input -> {
             List<Picture> pictures = Reader.read(input);
             List<Slide> slides = makeSlides(pictures);
             Slideshow slideshow =  new Slideshow();
             slides.forEach(slideshow::addSlide);
-            Writer.write(slides, input);
+            LOGGER.info(input + " interest Score before: " + slideshow.interestScore());
+            slideshow.bringInOrder();
+            Writer.write(slideshow.getSlides(), input);
+            LOGGER.info(input + " interest Score after:  " + slideshow.interestScore());
         });
     }
 
