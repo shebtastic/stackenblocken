@@ -1,6 +1,7 @@
 package main
 
 import (
+	"alltehalgo"
 	"bufio"
 	"io"
 	"log"
@@ -31,7 +32,7 @@ func main() {
 		log.Fatalf("omgah! %#v\n", err)
 	}
 
-	log.Printf("%#v", readFile(rfile))
+	alltehalgo.Hello(readFile(rfile))
 
 	wfile, err := os.Open("output/a.out")
 	if err != nil {
