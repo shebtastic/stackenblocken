@@ -34,34 +34,38 @@ func readFile(r io.Reader) []int {
 }
 
 func main() {
-	var (
-		current = 4
-		input   = "input/" + files[current] + ".in"
-		output  = "output/" + files[current] + ".out"
-	)
-	rfile, err := os.Open(input)
-	if err != nil {
-		log.Fatalf("omgah! %#v\n", err)
-	}
+	for _, file := range files {
+		input := "input/" + file + ".in"
+		output := "output/" + file + ".out"
 
-	result := alltehalgo.LaBoeuf(readFile(rfile))
-
-	wfile, err := os.Open(output)
-	if err != nil {
-		wfile, err = os.Create(output)
+		rfile, err := os.Open(input)
 		if err != nil {
-			log.Panicf("still ded! %#v\n", err)
+			log.Fatalf("omgah! %#v\n", err)
 		}
-		log.Printf("nvm.\n")
-	}
 
-	writer := bufio.NewWriter(wfile)
-	writer.WriteString(strconv.Itoa(len(result)) + "\n")
-	for index, entry := range result {
-		writer.WriteString(strconv.Itoa(entry))
-		if index != len(result)-1 {
-			writer.WriteString(" ")
+		result := alltehalgo.LaBoeuf(readFile(rfile))
+
+		_ = os.Remove(output)
+
+		wfile, err := os.Open(output)
+		if err != nil {
+			wfile, err = os.Create(output)
+			if err != nil {
+				log.Panicf("still ded! %#v\n", err)
+			}
+			log.Printf("created file %s", output)
 		}
+
+		writer := bufio.NewWriter(wfile)
+		writer.WriteString(strconv.Itoa(len(result)) + "\n")
+
+		for index, entry := range result {
+			writer.WriteString(strconv.Itoa(entry))
+			if index != len(result)-1 {
+				writer.WriteString(" ")
+			}
+		}
+
+		writer.Flush()
 	}
-	writer.Flush()
 }

@@ -9,7 +9,7 @@ func LaBoeuf(list []int) []int {
 
 	for i := numberOfPizzas - 1; i >= 0; i-- {
 		if pizzas[i] < remainingSlices {
-			result = append(result, pizzas[i])
+			result = append(result, i)
 			remainingSlices -= pizzas[i]
 		}
 	}
