@@ -28,7 +28,6 @@ func readFile(r io.Reader) []int {
 		}
 
 		numbers = append(numbers, number)
-		log.Println(number)
 	}
 
 	return numbers
@@ -57,8 +56,8 @@ func main() {
 	}
 
 	writer := bufio.NewWriter(wfile)
-	writer.WriteString(strconv.Itoa(result[0]) + "\n")
-	for index, entry := range result[1:] {
+	writer.WriteString(strconv.Itoa(len(result)) + "\n")
+	for index, entry := range result {
 		writer.WriteString(strconv.Itoa(entry))
 		if index != len(result)-1 {
 			writer.WriteString(" ")
