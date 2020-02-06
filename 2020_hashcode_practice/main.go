@@ -36,7 +36,6 @@ func main() {
 
 	wfile, err := os.Open("output/a.out")
 	if err != nil {
-		log.Printf("omgah omgah! %#v\n", err)
 		wfile, err = os.Create("output/a.out")
 		if err != nil {
 			log.Panicf("still ded! %#v\n", err)
