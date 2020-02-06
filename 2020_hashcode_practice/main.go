@@ -36,16 +36,16 @@ func readFile(r io.Reader) []int {
 
 func main() {
 	var (
-		current = 0
-		input = "input/" + files[current] + ".in"
-		output = "output/" + files[current] + ".out"
+		current = 4
+		input   = "input/" + files[current] + ".in"
+		output  = "output/" + files[current] + ".out"
 	)
 	rfile, err := os.Open(input)
 	if err != nil {
 		log.Fatalf("omgah! %#v\n", err)
 	}
 
-	alltehalgo.Hello(readFile(rfile))
+	result := alltehalgo.LaBoeuf(readFile(rfile))
 
 	wfile, err := os.Open(output)
 	if err != nil {
@@ -57,6 +57,12 @@ func main() {
 	}
 
 	writer := bufio.NewWriter(wfile)
-	writer.WriteString("diz be output")
+	writer.WriteString(strconv.Itoa(result[0]) + "\n")
+	for index, entry := range result[1:] {
+		writer.WriteString(strconv.Itoa(entry))
+		if index != len(result)-1 {
+			writer.WriteString(" ")
+		}
+	}
 	writer.Flush()
 }
