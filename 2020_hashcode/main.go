@@ -35,6 +35,7 @@ type Book struct {
 }
 
 type ByBookScore []Book
+type ByLibrarySignIn []Library
 
 func (s ByBookScore) Len() int {
 	return len(s)
@@ -44,6 +45,16 @@ func (s ByBookScore) Swap(i, j int) {
 }
 func (s ByBookScore) Less(i, j int) bool {
 	return s[i].Score < s[j].Score
+}
+
+func (s ByLibrarySignIn) Len() int {
+	return len(s)
+}
+func (s ByLibrarySignIn) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s ByLibrarySignIn) Less(i, j int) bool {
+	return s[i].SignUpTime < s[j].SignUpTime
 }
 
 func readFile(r io.Reader) (int, int, int, []Book, []Library) {
@@ -141,18 +152,20 @@ func main() {
 	}
 }
 
+<<<<<<< Updated upstream
 func doStuff() int {
 	return 0
 }
 
 func fastestSignUpTime(LiD []Library) Library {
 	temp_signUpTime := LiD[0]
+=======
+func fastestSignUpTime(LibraryId []Library) Library {
+	temp_signUpTime := LibraryId[0]
 
-	for _, Library := range LiD {
-		if Library.SignUpTime < temp_signUpTime.SignUpTime {
-			temp_signUpTime = Library
-		}
-	}
+	sort.Sort(ByLibrarySignIn(LibraryId))
+>>>>>>> Stashed changes
+
 	return temp_signUpTime
 }
 
