@@ -111,10 +111,9 @@ func main() {
 		rfile, err := os.Open(input)
 
 		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
-		numberOfUsedLibraries := doStuff()
+		fmt.Println(numberOfBooks, numberOfLibraries, numberOfDays, books, libraries)
 
-		fmt.Println(numberOfBooks, numberOfLibraries, numberOfDays, books, libraries, numberOfUsedLibraries)
-
+		selectedLibraries := libraries
 		_ = os.Remove(output)
 
 		wfile, err := os.Open(output)
@@ -123,7 +122,18 @@ func main() {
 		}
 
 		writer := bufio.NewWriter(wfile)
-		writer.WriteString("\n")
+		writer.WriteString(strconv.Itoa(len(selectedLibraries)) + "\n")
+		for _, library := range selectedLibraries {
+			writer.WriteString(strconv.Itoa(library.Id) + " " + strconv.Itoa(len(library.Books)) + "\n")
+			for index, book := range library.Books {
+				writer.WriteString(strconv.Itoa(book.Id))
+				if index == len(library.Books) - 1 {
+					writer.WriteString("\n")
+				} else {
+					writer.WriteString(" ")
+				}
+			}
+		}
 		writer.Flush()
 
 		fmt.Printf("%#v\n", fastestSignUpTime(libraries))
