@@ -12,11 +12,13 @@ import (
 
 var files = []string{
 	"a_example.txt",
+	/*
 	"c_incunabula.txt",
 	"e_so_many_books.txt",
 	"b_read_on.txt",
 	"d_tough_choices.txt",
 	"f_libraries_of_the_world.txt",
+	*/
 }
 
 type Library struct {
@@ -54,17 +56,17 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	scanner.Split(bufio.ScanLines)
 
 	_ = scanner.Scan()
-	firstLine := strings.Split(scanner.Text(), " ")
+	scannedLine := strings.Split(scanner.Text(), " ")
 
-	numberOfBooks, _ := strconv.Atoi(firstLine[0])
-	numberOfLibraries, _ := strconv.Atoi(firstLine[1])
-	numberOfDays, _ := strconv.Atoi(firstLine[2])
+	numberOfBooks, _ := strconv.Atoi(scannedLine[0])
+	numberOfLibraries, _ := strconv.Atoi(scannedLine[1])
+	numberOfDays, _ := strconv.Atoi(scannedLine[2])
 
 	fmt.Printf("%d, %d, %d\n", numberOfBooks, numberOfLibraries, numberOfDays)
 
 	scanner.Scan()
-	tmpBooks := strings.Split(scanner.Text(), " ")
-	for bookIndex, bookScore := range tmpBooks {
+	scannedLine = strings.Split(scanner.Text(), " ")
+	for bookIndex, bookScore := range scannedLine {
 		score, _ := strconv.Atoi(bookScore)
 		books = append(books, Book{
 			Id:    bookIndex,
@@ -73,11 +75,25 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	}
 
 	for scanner.Scan() {
-		tmpLibrary := scanner.Text()
+		scannedLine = strings.Split(scanner.Text(), " ")
+		bookCount, _ := strconv.Atoi(scannedLine[0])
+		signUpTime, _ := strconv.Atoi(scannedLine[1])
+		shippingSize, _ := strconv.Atoi(scannedLine[2])
+
 		scanner.Scan()
-		fmt.Println(string(tmpLibrary))
-		tmpLibraryBooks := scanner.Text()
-		fmt.Println(string(tmpLibraryBooks))
+		scannedLine = strings.Split(scanner.Text(), " ")
+		tmpBooks := []Book{}
+		for _, bookIndexAsString := range scannedLine {
+			bookIndex, _ := strconv.Atoi(bookIndexAsString)
+			tmpBooks = append(tmpBooks, books[bookIndex])
+		}
+
+		libraries = append(libraries, Library{
+			BookCount: bookCount,
+			SignUpTime: signUpTime,
+			ShippingSize: shippingSize,
+			Books: tmpBooks,
+		})
 	}
 
 	return numberOfBooks, numberOfLibraries, numberOfDays, books, libraries
@@ -92,8 +108,9 @@ func main() {
 
 		rfile, err := os.Open(input)
 
-		numberOfBooks, numberOfLibraries, numberOfDays, books, _ := readFile(rfile)
-		fmt.Printf("%#v", books)
+		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
+		fmt.Printf("%#v\n", books)
+		fmt.Printf("%#v\n", libraries)
 
 		_ = os.Remove(output)
 
