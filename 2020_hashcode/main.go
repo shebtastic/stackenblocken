@@ -33,7 +33,6 @@ type Book struct {
 }
 
 func readFile(r io.Reader) (int, int, int, []Book, []Library) {
-	fmt.Println("was called")
 	var (
 		libraries = []Library{}
 		books = []Book{}
@@ -48,8 +47,6 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	numberOfBooks, _ := strconv.Atoi(scannedLine[0])
 	numberOfLibraries, _ := strconv.Atoi(scannedLine[1])
 	numberOfDays, _ := strconv.Atoi(scannedLine[2])
-
-	fmt.Printf("%d, %d, %d\n", numberOfBooks, numberOfLibraries, numberOfDays)
 
 	scanner.Scan()
 	scannedLine = strings.Split(scanner.Text(), " ")
@@ -96,8 +93,9 @@ func main() {
 		rfile, err := os.Open(input)
 
 		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
-		fmt.Printf("%#v\n", books)
-		fmt.Printf("%#v\n", libraries)
+		numberOfUsedLibraries := doStuff()
+
+		fmt.Println(numberOfBooks, numberOfLibraries, numberOfDays, books, libraries, numberOfUsedLibraries)
 
 		_ = os.Remove(output)
 
@@ -107,7 +105,11 @@ func main() {
 		}
 
 		writer := bufio.NewWriter(wfile)
-		writer.WriteString("result" + strconv.Itoa(numberOfBooks) + " " + strconv.Itoa(numberOfLibraries) + " "  + strconv.Itoa(numberOfDays) + "\n")
+		writer.WriteString("\n")
 		writer.Flush()
 	}
+}
+
+func doStuff() int {
+	return 0
 }
