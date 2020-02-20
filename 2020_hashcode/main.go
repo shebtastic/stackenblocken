@@ -22,6 +22,7 @@ var files = []string{
 }
 
 type Library struct {
+	Id int
 	BookCount    int
 	SignUpTime   int
 	ShippingSize int
@@ -49,6 +50,8 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	var (
 		libraries = []Library{}
 		books     = []Book{}
+
+		libraryId = 0
 	)
 
 	scanner := bufio.NewScanner(r)
@@ -86,11 +89,13 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 		}
 
 		libraries = append(libraries, Library{
+			Id: libraryId,
 			BookCount:    bookCount,
 			SignUpTime:   signUpTime,
 			ShippingSize: shippingSize,
 			Books:        tmpBooks,
 		})
+		libraryId++
 	}
 
 	return numberOfBooks, numberOfLibraries, numberOfDays, books, libraries
