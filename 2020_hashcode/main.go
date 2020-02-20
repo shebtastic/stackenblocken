@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"os"
 	"strconv"
+	"strings"
 )
 
 var files = []string{
@@ -30,67 +31,66 @@ type Book struct {
 }
 
 func readFile(r io.Reader) (int, int, int, []Book, []Library) {
+	fmt.Println("was called")
 	var (
 		libraries = []Library{}
 		books = []Book{}
-		
-		numberOfBooks = 0
-		numberOfLibraries = 0
-		numberOfDays = 0
 	)
 
 	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanWords)
-	
-	numberOfBooks, _ = strconv.Atoi(scanner.Text())
-	numberOfLibraries, _ = strconv.Atoi(scanner.Text())
-	numberOfDays, _ = strconv.Atoi(scanner.Text())
-
 	scanner.Split(bufio.ScanLines)
-	tmpBooks := scanner.Text()
-	fmt.Println(string(tmpBooks))
+	
+	_ = scanner.Scan()
+	firstLine := strings.Split(scanner.Text(), " ")
+
+	numberOfBooks, _ := strconv.Atoi(firstLine[0])
+	numberOfLibraries, _ := strconv.Atoi(firstLine[1])
+	numberOfDays, _ := strconv.Atoi(firstLine[2])
+
+	fmt.Printf("%d, %d, %d\n", numberOfBooks, numberOfLibraries, numberOfDays)
+
+	scanner.Scan()
+	tmpBooks := strings.Split(scanner.Text(), " ")
+	for bookIndex, bookScore := range tmpBooks {
+		score, _ := strconv.Atoi(bookScore)
+		books = append(books, Book{
+			Id: bookIndex,
+			Score: score,
+		})
+	}
 
 	for scanner.Scan() {
 		tmpLibrary := scanner.Text()
+		scanner.Scan()
 		fmt.Println(string(tmpLibrary))
 		tmpLibraryBooks := scanner.Text()
 		fmt.Println(string(tmpLibraryBooks))
 	}
 
-	return numberOfBooks,
-		numberOfLibraries,
-		numberOfDays,
-		books,
-		libraries
+	return numberOfBooks, numberOfLibraries, numberOfDays, books, libraries
 
 }
 
 func main() {
 	fmt.Println("hashcode 2020")
 	for _, file := range files {
-		input := "input/" + file + ".in"
+		input := "input/" + file
 		output := "output/" + file + ".out"
 
 		rfile, err := os.Open(input)
-		if err != nil {
-			fmt.Printf("couldn't open file! %#v\n", err)
-		}
 
-		_, _, _, _, _ = readFile(rfile)
+		numberOfBooks, numberOfLibraries, numberOfDays, books, _ := readFile(rfile)
+		fmt.Printf("%#v", books)
 
 		_ = os.Remove(output)
 
 		wfile, err := os.Open(output)
 		if err != nil {
 			wfile, err = os.Create(output)
-			if err != nil {
-				fmt.Printf("failed to create file %#v\n", err)
-			}
-			fmt.Printf("created file %s\n", output)
 		}
 
 		writer := bufio.NewWriter(wfile)
-		writer.WriteString("result")
+		writer.WriteString("result" + strconv.Itoa(numberOfBooks) + " " + strconv.Itoa(numberOfLibraries) + " "  + strconv.Itoa(numberOfDays) + "\n")
 		writer.Flush()
 	}
 }
