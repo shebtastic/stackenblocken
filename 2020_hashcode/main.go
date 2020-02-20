@@ -12,13 +12,11 @@ import (
 
 var files = []string{
 	"a_example.txt",
-	/*
-		"c_incunabula.txt",
-		"e_so_many_books.txt",
-		"b_read_on.txt",
-		"d_tough_choices.txt",
-		"f_libraries_of_the_world.txt",
-	*/
+	"b_read_on.txt",
+	"c_incunabula.txt",
+	"d_tough_choices.txt",
+	"e_so_many_books.txt",
+	"f_libraries_of_the_world.txt",
 }
 
 type Library struct {
@@ -76,7 +74,10 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	numberOfDays, _ := strconv.Atoi(scannedLine[2])
 
 	scanner.Scan()
-	scannedLine = strings.Split(scanner.Text(), " ")
+	tmpScan := scanner.Text()
+	fmt.Printf("tmpScan %#v", tmpScan)
+	scannedLine = strings.Split(tmpScan, " ")
+	fmt.Printf("scannedLine %#v", scannedLine)
 	for bookIndex, bookScore := range scannedLine {
 		score, _ := strconv.Atoi(bookScore)
 		books = append(books, Book{
@@ -114,7 +115,6 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 }
 
 func main() {
-	fmt.Println("hashcode 2020")
 	for _, file := range files {
 		input := "input/" + file
 		output := "output/" + file + ".out"
@@ -122,7 +122,7 @@ func main() {
 		rfile, err := os.Open(input)
 
 		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
-		fmt.Println(numberOfBooks, numberOfLibraries, numberOfDays, books, libraries)
+		fmt.Printf("nah", numberOfBooks, numberOfLibraries, numberOfDays, books, libraries)
 
 		selectedLibraries := fastestSignUpTime(libraries)
 		_ = os.Remove(output)
