@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
-	"bufio"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -19,27 +20,39 @@ var files = []string{
 }
 
 type Library struct {
-	BookCount int
-	SignUpTime int
+	BookCount    int
+	SignUpTime   int
 	ShippingSize int
-	Books []Book
+	Books        []Book
 }
 
 type Book struct {
-	Id int
+	Id    int
 	Score int
+}
+
+type ByBookScore []Book
+
+func (s ByBookScore) Len() int {
+	return len(s)
+}
+func (s ByBookScore) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s ByBookScore) Less(i, j int) bool {
+	return s[i].Score < s[j].Score
 }
 
 func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	fmt.Println("was called")
 	var (
 		libraries = []Library{}
-		books = []Book{}
+		books     = []Book{}
 	)
 
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
-	
+
 	_ = scanner.Scan()
 	firstLine := strings.Split(scanner.Text(), " ")
 
@@ -54,7 +67,7 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	for bookIndex, bookScore := range tmpBooks {
 		score, _ := strconv.Atoi(bookScore)
 		books = append(books, Book{
-			Id: bookIndex,
+			Id:    bookIndex,
 			Score: score,
 		})
 	}
@@ -90,7 +103,43 @@ func main() {
 		}
 
 		writer := bufio.NewWriter(wfile)
-		writer.WriteString("result" + strconv.Itoa(numberOfBooks) + " " + strconv.Itoa(numberOfLibraries) + " "  + strconv.Itoa(numberOfDays) + "\n")
+		writer.WriteString("result" + strconv.Itoa(numberOfBooks) + " " + strconv.Itoa(numberOfLibraries) + " " + strconv.Itoa(numberOfDays) + "\n")
 		writer.Flush()
+
+		libraries := []Library{
+			Library{
+				SignUpTime: 5,
+			},
+			Library{
+				SignUpTime: 5,
+			},
+			Library{
+				SignUpTime: 2,
+			},
+			Library{
+				SignUpTime: 5,
+			},
+		}
+
+		fmt.Printf("%#v\n", fastestSignUpTime(libraries))
 	}
+}
+
+func fastestSignUpTime(LiD []Library) Library {
+	temp_signUpTime := LiD[0]
+
+	for _, Library := range LiD {
+		if Library.SignUpTime < temp_signUpTime.SignUpTime {
+			temp_signUpTime = Library
+		}
+	}
+	return temp_signUpTime
+}
+
+func highestBookScore(bookScore []Book) Book {
+	temp_highestBookScore := bookScore[0]
+
+	sort.Sort(ByBookScore(bookScore))
+
+	return temp_highestBookScore
 }
