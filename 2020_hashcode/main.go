@@ -124,7 +124,7 @@ func main() {
 		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
 		fmt.Println(numberOfBooks, numberOfLibraries, numberOfDays, books, libraries)
 
-		selectedLibraries := libraries
+		selectedLibraries := fastestSignUpTime(libraries)
 		_ = os.Remove(output)
 
 		wfile, err := os.Open(output)
@@ -152,27 +152,14 @@ func main() {
 	}
 }
 
-<<<<<<< Updated upstream
-func doStuff() int {
-	return 0
+func fastestSignUpTime(libraries []Library) []Library {
+	sort.Sort(ByLibrarySignIn(libraries))
+
+	return libraries
 }
 
-func fastestSignUpTime(LiD []Library) Library {
-	temp_signUpTime := LiD[0]
-=======
-func fastestSignUpTime(LibraryId []Library) Library {
-	temp_signUpTime := LibraryId[0]
+func highestBookScore(books []Book) []Book {
+	sort.Sort(ByBookScore(books))
 
-	sort.Sort(ByLibrarySignIn(LibraryId))
->>>>>>> Stashed changes
-
-	return temp_signUpTime
-}
-
-func highestBookScore(bookScore []Book) Book {
-	temp_highestBookScore := bookScore[0]
-
-	sort.Sort(ByBookScore(bookScore))
-
-	return temp_highestBookScore
+	return books
 }
