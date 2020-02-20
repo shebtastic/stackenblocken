@@ -7,7 +7,6 @@ import (
 	"os"
 	"sort"
 	"strconv"
-	"strings"
 )
 
 var files = []string{
@@ -64,22 +63,18 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	)
 
 	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanLines)
+	scanner.Split(bufio.ScanWords)
 
 	_ = scanner.Scan()
-	scannedLine := strings.Split(scanner.Text(), " ")
+	numberOfBooks, _ := strconv.Atoi(scanner.Text())
+	_ = scanner.Scan()
+	numberOfLibraries, _ := strconv.Atoi(scanner.Text())
+	_ = scanner.Scan()
+	numberOfDays, _ := strconv.Atoi(scanner.Text())
 
-	numberOfBooks, _ := strconv.Atoi(scannedLine[0])
-	numberOfLibraries, _ := strconv.Atoi(scannedLine[1])
-	numberOfDays, _ := strconv.Atoi(scannedLine[2])
-
-	scanner.Scan()
-	tmpScan := scanner.Text()
-	fmt.Printf("tmpScan %#v", tmpScan)
-	scannedLine = strings.Split(tmpScan, " ")
-	fmt.Printf("scannedLine %#v", scannedLine)
-	for bookIndex, bookScore := range scannedLine {
-		score, _ := strconv.Atoi(bookScore)
+	for bookIndex := 0; bookIndex < numberOfBooks; bookIndex++{
+		_ = scanner.Scan()
+		score, _ := strconv.Atoi(scanner.Text())
 		books = append(books, Book{
 			Id:    bookIndex,
 			Score: score,
@@ -87,16 +82,16 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 	}
 
 	for scanner.Scan() {
-		scannedLine = strings.Split(scanner.Text(), " ")
-		bookCount, _ := strconv.Atoi(scannedLine[0])
-		signUpTime, _ := strconv.Atoi(scannedLine[1])
-		shippingSize, _ := strconv.Atoi(scannedLine[2])
+		bookCount, _ := strconv.Atoi(scanner.Text())
+		_ = scanner.Scan()
+		signUpTime, _ := strconv.Atoi(scanner.Text())
+		_ = scanner.Scan()
+		shippingSize, _ := strconv.Atoi(scanner.Text())
 
-		scanner.Scan()
-		scannedLine = strings.Split(scanner.Text(), " ")
 		tmpBooks := []Book{}
-		for _, bookIndexAsString := range scannedLine {
-			bookIndex, _ := strconv.Atoi(bookIndexAsString)
+		for bookIndex := 0; bookIndex < bookCount; bookIndex++ {
+			_ = scanner.Scan()
+			bookIndex, _ := strconv.Atoi(scanner.Text())
 			tmpBooks = append(tmpBooks, books[bookIndex])
 		}
 
@@ -121,8 +116,8 @@ func main() {
 
 		rfile, err := os.Open(input)
 
-		numberOfBooks, numberOfLibraries, numberOfDays, books, libraries := readFile(rfile)
-		fmt.Printf("nah", numberOfBooks, numberOfLibraries, numberOfDays, books, libraries)
+		_, _, _, books, libraries := readFile(rfile)
+		fmt.Printf("books %#v\nlibraries %#v\n\n", books, libraries)
 
 		selectedLibraries := fastestSignUpTime(libraries)
 		_ = os.Remove(output)
@@ -147,8 +142,8 @@ func main() {
 		}
 		writer.Flush()
 
-		fmt.Printf("%#v\n", fastestSignUpTime(libraries))
-		fmt.Printf("%#v\n", highestBookScore(books))
+		//fmt.Printf("%#v\n", fastestSignUpTime(libraries))
+		//fmt.Printf("%#v\n", highestBookScore(books))
 	}
 }
 
