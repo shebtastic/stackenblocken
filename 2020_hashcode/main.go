@@ -13,11 +13,11 @@ import (
 var files = []string{
 	"a_example.txt",
 	/*
-	"c_incunabula.txt",
-	"e_so_many_books.txt",
-	"b_read_on.txt",
-	"d_tough_choices.txt",
-	"f_libraries_of_the_world.txt",
+		"c_incunabula.txt",
+		"e_so_many_books.txt",
+		"b_read_on.txt",
+		"d_tough_choices.txt",
+		"f_libraries_of_the_world.txt",
 	*/
 }
 
@@ -89,10 +89,10 @@ func readFile(r io.Reader) (int, int, int, []Book, []Library) {
 		}
 
 		libraries = append(libraries, Library{
-			BookCount: bookCount,
-			SignUpTime: signUpTime,
+			BookCount:    bookCount,
+			SignUpTime:   signUpTime,
 			ShippingSize: shippingSize,
-			Books: tmpBooks,
+			Books:        tmpBooks,
 		})
 	}
 
@@ -123,22 +123,8 @@ func main() {
 		writer.WriteString("result" + strconv.Itoa(numberOfBooks) + " " + strconv.Itoa(numberOfLibraries) + " " + strconv.Itoa(numberOfDays) + "\n")
 		writer.Flush()
 
-		libraries := []Library{
-			Library{
-				SignUpTime: 5,
-			},
-			Library{
-				SignUpTime: 5,
-			},
-			Library{
-				SignUpTime: 2,
-			},
-			Library{
-				SignUpTime: 5,
-			},
-		}
-
 		fmt.Printf("%#v\n", fastestSignUpTime(libraries))
+		fmt.Printf("%#v\n", highestBookScore(books))
 	}
 }
 
