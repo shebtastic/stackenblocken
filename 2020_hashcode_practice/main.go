@@ -43,7 +43,7 @@ func main() {
 			log.Fatalf("omgah! %#v\n", err)
 		}
 
-		result := alltehalgo.LaBoeuf(readFile(rfile))
+		result := alltehalgo.HelpSlices(readFile(rfile))
 
 		_ = os.Remove(output)
 

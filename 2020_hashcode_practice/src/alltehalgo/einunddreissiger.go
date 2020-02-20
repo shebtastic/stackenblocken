@@ -1,11 +1,28 @@
 package alltehalgo
 
-import (
-	"fmt"
-)
+func HelpSlices(list []int) []int {
+	remainingSlices := list[0]
+	numberOfPizzas := list[1]
+	pizzas := list[2:]
 
-func HelpSlices(x []int) {
-	for i := 0; i > len(x); i++ {
-		fmt.Printf("%+v", x[i])
+	result := []int{}
+	new_result := result
+	best_result := []int{}
+
+	for i := numberOfPizzas - 1; i >= 0; i-- {
+		if pizzas[i] < remainingSlices {
+			result = append(result, i)
+			remainingSlices -= pizzas[i]
+		}
+
+		if new_result > best_result {
+			best_result = new_result
+		} else {
+			HelpSlices(best_result)
+		}
 	}
+
+	return best_result
 }
+
+// Einen Wert rausschmeißen und dann wieder kontrollieren, dass mit allen Werten
