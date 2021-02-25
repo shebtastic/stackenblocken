@@ -40,7 +40,7 @@ func main() {
 	}
 
 	files := getFiles()
-	data := readFile(files[0])
+	data := readFile(files[4])
 
 	res.teams2Deliveries = append(res.teams2Deliveries, <-assign(data.availablePizzas, 2, data.numTeams2)...)
 	res.teams3Deliveries = append(res.teams3Deliveries, <-assign(data.availablePizzas, 3, data.numTeams3)...)
@@ -73,7 +73,7 @@ func assign(pizzas []*pizza, teamSize int, limit int) chan [][]pizza {
 			}
 			result = append(result, order)
 		}
-		fmt.Printf("partialResult:%#v\n", result)
+		// fmt.Printf("partialResult:%#v\n", result)
 
 		r <- result
 	}()
