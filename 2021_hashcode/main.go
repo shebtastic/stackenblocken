@@ -8,12 +8,16 @@ import (
 	"strings"
 )
 
-type meta struct {
+type inputMeta struct {
 	simulationDuration int
 	numOfIntersections int
 	numOfStreets       int
 	numOfCars          int
 	bonusPoints        int
+}
+
+type outputMeta struct {
+	numberIntersections int
 }
 
 type street struct {
@@ -28,10 +32,26 @@ type car struct {
 	streets              []string
 }
 
+type greenlight struct {
+	streetName string
+	duration   int
+}
+
+type schedule struct {
+	id                      int
+	numberOfIncomingStreets int
+	greenlights             []greenlight
+}
+
 type parsedData struct {
-	meta    meta
+	meta    inputMeta
 	streets []street
 	cars    []car
+}
+
+type outputData struct {
+	meta     outputMeta
+	schedule schedule
 }
 
 const dataInputFolder string = "./data/"
@@ -102,7 +122,7 @@ func readFile(file os.DirEntry) parsedData {
 	}
 
 	return parsedData{
-		meta: meta{
+		meta: inputMeta{
 			simulationDuration: simulationDuration,
 			numOfIntersections: numOfIntersections,
 			numOfStreets:       numOfStreets,
@@ -114,12 +134,44 @@ func readFile(file os.DirEntry) parsedData {
 	}
 }
 
+func writeFile(file os.DirEntry, outputData outputData) {
+	output := file.Name() + ".out"
+	_ = os.Remove(output)
+
+	wfile, err := os.Open(output)
+	if err != nil {
+		wfile, err = os.Create(output)
+	}
+
+	writer := bufio.NewWriter(wfile)
+	// writer.WriteString(strconv.Itoa(len(selectedLibraries)) + "\n")
+	// for _, library := range selectedLibraries {
+	// 	writer.WriteString(strconv.Itoa(library.Id) + " " + strconv.Itoa(len(library.Books)) + "\n")
+	// 	for index, book := range library.Books {
+	// 		writer.WriteString(strconv.Itoa(book.Id))
+	// 		if index == len(library.Books) - 1 {
+	// 			writer.WriteString("\n")
+	// 		} else {
+	// 			writer.WriteString(" ")
+	// 		}
+	// 	}
+	// }
+	writer.Flush()
+}
+
 func main() {
 
 	files := getFiles()
-	data := readFile(files[0])
+	selectedFile := files[0]
+	data := readFile(selectedFile)
 
 	fmt.Printf("\n\nfinalResult:\n%#v\n", data)
+
+	writeFile(selectedFile, outputData{
+		meta: outputMeta{
+			numberIntersections: 0,
+		},
+	})
 	// var c []chan []int
 	// data := []int{}
 	// res := []int{}
