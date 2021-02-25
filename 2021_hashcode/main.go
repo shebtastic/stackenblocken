@@ -74,8 +74,9 @@ func getFiles() []os.DirEntry {
 	return files
 }
 
-func readFile(file os.DirEntry) parsedData {
-	reader, _ := os.Open(dataInputFolder + file.Name())
+func readFile(file string) parsedData {
+	fmt.Print(file)
+	reader, _ := os.Open(file)
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 
@@ -134,16 +135,21 @@ func readFile(file os.DirEntry) parsedData {
 	}
 }
 
-func writeFile(file os.DirEntry, outputData outputData) {
-	output := file.Name() + ".out"
-	_ = os.Remove(output)
+func writeFile(file string, outputData outputData) {
+	_ = os.Remove(file)
 
-	wfile, err := os.Open(output)
+	wfile, err := os.Open(file)
 	if err != nil {
-		wfile, err = os.Create(output)
+		wfile, err = os.Create(file)
 	}
 
 	writer := bufio.NewWriter(wfile)
+	// writer.WriteString(strconv.Itoa(len(outputData.outputMeta.numberIntersections)) + "\n")
+	// for _, s := range outputData.schedule {
+	// writer.WriteString(s.id + "\n")
+	// writer.WriteString(s.numberOfIncomingStreets + "\n")
+	// writer.WriteString(s.numberOfIncomingStreets + "\n")
+	// }
 	// writer.WriteString(strconv.Itoa(len(selectedLibraries)) + "\n")
 	// for _, library := range selectedLibraries {
 	// 	writer.WriteString(strconv.Itoa(library.Id) + " " + strconv.Itoa(len(library.Books)) + "\n")
@@ -159,15 +165,26 @@ func writeFile(file os.DirEntry, outputData outputData) {
 	writer.Flush()
 }
 
+type intersection struct {
+	id      int
+	streets []street
+}
+
+func buildGraph(data parsedData) {
+	// graph := make(map[intersection][]cars)
+}
+
 func main() {
 
 	files := getFiles()
 	selectedFile := files[0]
-	data := readFile(selectedFile)
+	data := readFile(dataInputFolder + selectedFile.Name())
 
 	fmt.Printf("\n\nfinalResult:\n%#v\n", data)
 
-	writeFile(selectedFile, outputData{
+	// _ = buildGraph(data)
+
+	writeFile(dataOutputFolder+selectedFile.Name()+".out", outputData{
 		meta: outputMeta{
 			numberIntersections: 5,
 		},
