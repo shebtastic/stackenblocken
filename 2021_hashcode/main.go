@@ -51,7 +51,7 @@ type parsedData struct {
 
 type outputData struct {
 	meta     outputMeta
-	schedule schedule
+	schedule []schedule
 }
 
 const dataInputFolder string = "./data/"
@@ -169,7 +169,27 @@ func main() {
 
 	writeFile(selectedFile, outputData{
 		meta: outputMeta{
-			numberIntersections: 0,
+			numberIntersections: 5,
+		},
+		schedule: []schedule{
+			{
+				id:                      5,
+				numberOfIncomingStreets: 3,
+				greenlights: []greenlight{
+					{
+						streetName: "rue-de-eins",
+						duration:   10,
+					},
+					{
+						streetName: "rue-de-zwo",
+						duration:   6,
+					},
+					{
+						streetName: "rue-de-tres",
+						duration:   9,
+					},
+				},
+			},
 		},
 	})
 	// var c []chan []int
