@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,60 +10,60 @@ import (
 )
 
 type inputMeta struct {
-	simulationDuration int
-	numOfIntersections int
-	numOfStreets       int
-	numOfCars          int
-	bonusPoints        int
+	SimulationDuration int
+	NumOfIntersections int
+	NumOfStreets       int
+	NumOfCars          int
+	BonusPoints        int
 }
 
 type outputMeta struct {
-	numberIntersections int
+	NumberIntersections int
 }
 
 type street struct {
-	startIntersection int
-	streetName        string
-	endIntersection   int
-	time              int
+	StartIntersection int
+	StreetName        string
+	EndIntersection   int
+	Time              int
 }
 
 type car struct {
-	numOfStreetsToTravel int
-	streets              []string
+	NumOfStreetsToTravel int
+	Streets              []string
 }
 
 type greenlight struct {
-	streetName string
-	duration   int
+	StreetName string
+	Duration   int
 }
 
 type schedule struct {
-	id                      int
-	numberOfIncomingStreets int
-	greenlights             []greenlight
+	ID                      int
+	NumberOfIncomingStreets int
+	Greenlights             []greenlight
 }
 
 type parsedData struct {
-	meta    inputMeta
-	streets []street
-	cars    []car
+	Meta    inputMeta
+	Streets []street
+	Cars    []car
 }
 
 type outputData struct {
-	meta     outputMeta
-	schedule []schedule
+	Meta     outputMeta
+	Schedule []schedule
 }
 
 const dataInputFolder string = "./data/"
-const dataOutputFolder string = "./out/"
+const dataOutputFolder string = "./output/"
 
 func async(items []int) chan []int {
 	r := make(chan []int)
 
 	go func() {
 		defer close(r)
-		fmt.Printf("chunksize:%d\n", len(items))
+		// fmt.Printf("chunksize:%d\n", len(items))
 		r <- items
 	}()
 
@@ -75,7 +76,6 @@ func getFiles() []os.DirEntry {
 }
 
 func readFile(file string) parsedData {
-	fmt.Print(file)
 	reader, _ := os.Open(file)
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
@@ -100,10 +100,10 @@ func readFile(file string) parsedData {
 		time, _ := strconv.Atoi(line[3])
 
 		streets = append(streets, street{
-			startIntersection: startIntersection,
-			endIntersection:   endIntersection,
-			streetName:        streetName,
-			time:              time,
+			StartIntersection: startIntersection,
+			EndIntersection:   endIntersection,
+			StreetName:        streetName,
+			Time:              time,
 		})
 	}
 
@@ -116,22 +116,22 @@ func readFile(file string) parsedData {
 		streets := line[1:]
 
 		cars = append(cars, car{
-			numOfStreetsToTravel: numOfStreetsToTravel,
-			streets:              streets,
+			NumOfStreetsToTravel: numOfStreetsToTravel,
+			Streets:              streets,
 		})
 
 	}
 
 	return parsedData{
-		meta: inputMeta{
-			simulationDuration: simulationDuration,
-			numOfIntersections: numOfIntersections,
-			numOfStreets:       numOfStreets,
-			numOfCars:          numOfCars,
-			bonusPoints:        bonusPoints,
+		Meta: inputMeta{
+			SimulationDuration: simulationDuration,
+			NumOfIntersections: numOfIntersections,
+			NumOfStreets:       numOfStreets,
+			NumOfCars:          numOfCars,
+			BonusPoints:        bonusPoints,
 		},
-		streets: streets,
-		cars:    cars,
+		Streets: streets,
+		Cars:    cars,
 	}
 }
 
@@ -144,34 +144,99 @@ func writeFile(file string, outputData outputData) {
 	}
 
 	writer := bufio.NewWriter(wfile)
-	// writer.WriteString(strconv.Itoa(len(outputData.outputMeta.numberIntersections)) + "\n")
-	// for _, s := range outputData.schedule {
-	// writer.WriteString(s.id + "\n")
-	// writer.WriteString(s.numberOfIncomingStreets + "\n")
-	// writer.WriteString(s.numberOfIncomingStreets + "\n")
-	// }
-	// writer.WriteString(strconv.Itoa(len(selectedLibraries)) + "\n")
-	// for _, library := range selectedLibraries {
-	// 	writer.WriteString(strconv.Itoa(library.Id) + " " + strconv.Itoa(len(library.Books)) + "\n")
-	// 	for index, book := range library.Books {
-	// 		writer.WriteString(strconv.Itoa(book.Id))
-	// 		if index == len(library.Books) - 1 {
-	// 			writer.WriteString("\n")
-	// 		} else {
-	// 			writer.WriteString(" ")
-	// 		}
-	// 	}
-	// }
+	writer.WriteString(strconv.Itoa(outputData.Meta.NumberIntersections) + "\n")
+	for _, s := range outputData.Schedule {
+		writer.WriteString(strconv.Itoa(s.ID) + "\n")
+		writer.WriteString(strconv.Itoa(s.NumberOfIncomingStreets) + "\n")
+		for _, g := range s.Greenlights {
+			writer.WriteString(g.StreetName + " " + strconv.Itoa(g.Duration) + "\n")
+		}
+	}
 	writer.Flush()
 }
 
 type intersection struct {
-	id      int
-	streets []street
+	ID      int
+	Streets []street
+	Cars    []car
 }
 
-func buildGraph(data parsedData) {
-	// graph := make(map[intersection][]cars)
+func buildGraph(data parsedData) map[int]intersection {
+	graph := make(map[int]intersection)
+
+	for _, s := range data.Streets {
+		id := s.EndIntersection
+		if _, ok := graph[id]; !ok {
+			graph[id] = intersection{
+				ID:      id,
+				Streets: []street{},
+				Cars:    []car{},
+			}
+		}
+		i := graph[id]
+		graph[id] = intersection{
+			ID:      i.ID,
+			Streets: append(i.Streets, s),
+			Cars:    i.Cars,
+		}
+	}
+
+	for _, car := range data.Cars {
+		startPosition := car.Streets[0]
+		for index, i := range graph {
+			for _, s := range i.Streets {
+				if startPosition == s.StreetName {
+					graph[index] = intersection{
+						ID:      i.ID,
+						Streets: i.Streets,
+						Cars:    append(i.Cars, car),
+					}
+				}
+			}
+		}
+	}
+
+	return graph
+}
+
+func greenlightGraph(data parsedData) map[int]bool {
+	graph := make(map[int]bool)
+	for _, s := range data.Streets {
+		id := s.EndIntersection
+		graph[id] = false
+	}
+
+	return graph
+}
+
+func copyGraph(graph map[int]intersection) map[int]intersection {
+	newGraph := map[int]intersection{}
+
+	for _, i := range graph {
+		streets := []street{}
+		cars := []car{}
+		for _, s := range i.Streets {
+			streets = append(streets, s)
+		}
+		for _, c := range i.Cars {
+			cs := []string{}
+			for _, st := range c.Streets {
+				cs = append(cs, st)
+			}
+			cars = append(cars, car{
+				NumOfStreetsToTravel: c.NumOfStreetsToTravel,
+				Streets:              cs,
+			})
+		}
+
+		newGraph[i.ID] = intersection{
+			ID:      i.ID,
+			Streets: streets,
+			Cars:    cars,
+		}
+	}
+
+	return newGraph
 }
 
 func main() {
@@ -180,35 +245,214 @@ func main() {
 	selectedFile := files[0]
 	data := readFile(dataInputFolder + selectedFile.Name())
 
-	fmt.Printf("\n\nfinalResult:\n%#v\n", data)
+	graph := buildGraph(data)
 
-	// _ = buildGraph(data)
+	res := outputData{
+		Schedule: []schedule{},
+	}
+	for tick := data.Meta.SimulationDuration; tick > 0; tick-- {
+		j, _ := json.Marshal(res)
+		fmt.Println(string(j))
 
-	writeFile(dataOutputFolder+selectedFile.Name()+".out", outputData{
-		meta: outputMeta{
-			numberIntersections: 5,
+		graphCopy := copyGraph(graph)
+		for _, i := range graph {
+			if len(i.Cars) > 0 {
+				c := i.Cars[0]
+				currentStreet := c.Streets[0]
+				nextStreet := ""
+				if len(c.Streets) > 2 {
+					nextStreet = c.Streets[1]
+				}
+				alreadySet := false
+				news := []schedule{}
+				for sid, s := range res.Schedule {
+					if s.ID == i.ID {
+						for gid, g := range s.Greenlights {
+							if g.StreetName == currentStreet {
+								res.Schedule[sid].Greenlights[gid].Duration++
+								alreadySet = true
+							}
+						}
+						if !alreadySet {
+							res.Schedule[sid] = schedule{
+								ID: s.ID,
+								Greenlights: append(s.Greenlights, greenlight{
+									StreetName: currentStreet,
+									Duration:   1,
+								}),
+							}
+							alreadySet = true
+						}
+					}
+					news = append(news, s)
+				}
+
+				if !alreadySet {
+					news = append(res.Schedule, schedule{
+						ID: i.ID,
+						Greenlights: []greenlight{
+							{
+								StreetName: currentStreet,
+								Duration:   1,
+							},
+						},
+					})
+				}
+				res = outputData{
+					Schedule: news,
+				}
+
+				graphCopy[i.ID] = intersection{
+					ID:      i.ID,
+					Streets: i.Streets,
+					Cars:    i.Cars[1:],
+				}
+
+				if c.NumOfStreetsToTravel > 1 {
+					c = car{
+						NumOfStreetsToTravel: c.NumOfStreetsToTravel - 1,
+						Streets:              c.Streets[1:],
+					}
+					for _, nextIntersection := range graph {
+						for _, nextIntersectionStreet := range nextIntersection.Streets {
+							if nextStreet == nextIntersectionStreet.StreetName {
+								graphCopy[nextIntersection.ID] = intersection{
+									ID:      nextIntersection.ID,
+									Streets: nextIntersection.Streets,
+									Cars:    append(nextIntersection.Cars, c),
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		graph = graphCopy
+	}
+
+	schedules := []schedule{}
+	//schedule duplicate
+	// - merge greenlights on intersections
+	for _, s := range res.Schedule {
+		greens := map[string]int{}
+		for _, g := range s.Greenlights {
+			if _, ok := greens[g.StreetName]; !ok {
+				greens[g.StreetName] = 1
+			} else {
+				greens[g.StreetName]++
+			}
+		}
+
+		sgreens := []greenlight{}
+		for k, d := range greens {
+			sgreens = append(sgreens, greenlight{
+				StreetName: k,
+				Duration:   d,
+			})
+		}
+		schedules = append(schedules, schedule{
+			ID:                      s.ID,
+			NumberOfIncomingStreets: len(s.Greenlights),
+			Greenlights:             sgreens,
+		})
+	}
+	res = outputData{
+		Meta: outputMeta{
+			NumberIntersections: len(res.Schedule),
 		},
-		schedule: []schedule{
-			{
-				id:                      5,
-				numberOfIncomingStreets: 3,
-				greenlights: []greenlight{
-					{
-						streetName: "rue-de-eins",
-						duration:   10,
+		Schedule: schedules,
+	}
+
+	// j, _ := json.Marshal(res)
+	// fmt.Println(string(j))
+
+	fmt.Printf("\n\nfinalResult:\n%#v\n", res)
+	writeFile(dataOutputFolder+selectedFile.Name()+".out", res)
+
+	/*
+		map[int]main.intersection{
+			0: main.intersection{
+				ID: 0,
+				Streets: []main.street{
+					main.street{
+						StartIntersection: 2,
+						StreetName:        "rue-de-londres",
+						EndIntersection:   0,
+						Time:              1}},
+				Cars: []main.car{
+					main.car{
+						NumOfStreetsToTravel: 4,
+						Streets: []string{
+							"rue-de-londres",
+							"rue-d-amsterdam",
+							"rue-de-moscou",
+							"rue-de-rome"}}}},
+			1: main.intersection{
+				ID: 1,
+				Streets: []main.street{
+					main.street{
+						StartIntersection: 0,
+						StreetName:        "rue-d-amsterdam",
+						EndIntersection:   1,
+						Time:              1},
+					main.street{
+						StartIntersection: 3,
+						StreetName:        "rue-d-athenes",
+						EndIntersection:   1,
+						Time:              1}},
+				Cars: []main.car{
+					main.car{
+						NumOfStreetsToTravel: 3,
+						Streets: []string{
+							"rue-d-athenes",
+							"rue-de-moscou",
+							"rue-de-londres"}}}},
+			2: main.intersection{
+				ID: 2,
+				Streets: []main.street{
+					main.street{
+						StartIntersection: 1,
+						StreetName:        "rue-de-moscou",
+						EndIntersection:   2,
+						Time:              3}},
+				Cars: []main.car{}},
+			3: main.intersection{
+				ID: 3,
+				Streets: []main.street{
+					main.street{
+						StartIntersection: 2,
+						StreetName:        "rue-de-rome",
+						EndIntersection:   3,
+						Time:              2}},
+				Cars: []main.car{}}}
+
+		/*
+			 outputData{
+					Meta: outputMeta{
+						NumberIntersections: 5,
 					},
-					{
-						streetName: "rue-de-zwo",
-						duration:   6,
+					Schedule: []schedule{
+						{
+							ID:                      5,
+							NumberOfIncomingStreets: 3,
+							Greenlights: []greenlight{
+								{
+									StreetName: "rue-de-eins",
+									Duration:   10,
+								},
+								{
+									StreetName: "rue-de-zwo",
+									Duration:   6,
+								},
+								{
+									StreetName: "rue-de-tres",
+									Duration:   9,
+								},
+							},
+						},
 					},
-					{
-						streetName: "rue-de-tres",
-						duration:   9,
-					},
-				},
-			},
-		},
-	})
+				}
+	*/
 	// var c []chan []int
 	// data := []int{}
 	// res := []int{}
